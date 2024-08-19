@@ -17,7 +17,7 @@ const UserControllers = {
         .status(200)
         .json({ message: "Successfully get all users", data: allUsers });
     } catch (error) {
-      throw error;
+      next(error);
     }
   },
   handleRegisterUser: async (
