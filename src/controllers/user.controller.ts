@@ -55,7 +55,11 @@ const UserControllers = {
 
     try {
       // delete refresh token from database
-      await AuthServices.delete(refreshToken);
+      const result = await AuthServices.delete(refreshToken);
+
+      if (!result) {
+        throw createError(400, "Failed to delete refresh token");
+      }
 
       res
         .clearCookie("accessToken")

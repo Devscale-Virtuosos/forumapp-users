@@ -1,8 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { createError } from "../utils/error";
+
 import AuthRepositories from "../repositories/auth.repository";
 import { ITokenPayload } from "../types";
+import { createError, env } from "../utils";
 
 export async function verifyAccessToken(
   req: Request,
@@ -14,7 +15,7 @@ export async function verifyAccessToken(
   // check if access token exists
   if (accessToken) {
     try {
-      jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET as string);
+      jwt.verify(accessToken, env.JWT_ACCESS_SECRET);
       next();
     } catch (error) {
       // access token invalid -> generate new one
@@ -26,7 +27,7 @@ export async function verifyAccessToken(
         }
 
         // check if refresh token valid
-        jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string);
+        jwt.verify(refreshToken, env.JWT_REFRESH_SECRET);
 
         // IF refresh token valid THEN check if exists in database
         const activeRefreshToken = await AuthRepositories.getOne(refreshToken);
@@ -44,8 +45,8 @@ export async function verifyAccessToken(
             name: payload.name,
             email: payload.email,
           },
-          process.env.JWT_ACCESS_SECRET as string,
-          { expiresIn: process.env.JWT_ACCESS_EXPIRES_TIME || 3600 }
+          env.JWT_ACCESS_SECRET,
+          { expiresIn: env.JWT_ACCESS_EXPIRES_TIME || 3600 }
         );
 
         res.cookie("accessToken", newAccessToken, { httpOnly: true });

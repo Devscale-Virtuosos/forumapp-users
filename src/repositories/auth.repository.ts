@@ -21,7 +21,8 @@ const AuthRepositories = {
   },
   delete: async (refreshToken: string) => {
     try {
-      await Auth.findOneAndDelete({ refreshToken });
+      const result = await Auth.findOneAndDelete({ refreshToken });
+      return result;
     } catch (error) {
       throw error;
     }

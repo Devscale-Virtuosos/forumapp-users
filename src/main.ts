@@ -1,19 +1,18 @@
 import express from "express";
-import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import morgan from "morgan";
 
-import { checkOriginMiddleware } from "./middlewares/check-origin.middleware";
-import { errorHandlerMiddleware } from "./middlewares/error-handler.middleware";
+import { checkOriginMiddleware, errorHandlerMiddleware } from "./middlewares";
 import { userRouter } from "./routes/user.route";
-import { connectMongodb } from "./utils/database";
+import { connectMongodb, env } from "./utils";
 
-dotenv.config();
 connectMongodb();
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(morgan("common"));
 app.use(checkOriginMiddleware);
 
 /**
@@ -24,6 +23,6 @@ app.use("/", userRouter);
 // error handler middleware, place it after all routes
 app.use(errorHandlerMiddleware);
 
-app.listen(process.env.PORT || 8000, () => {
-  console.log(`Server running at port: ${process.env.PORT ?? 8000}`);
+app.listen(env.PORT || 8000, () => {
+  console.log(`Server running at port: ${env.PORT ?? 8000}`);
 });

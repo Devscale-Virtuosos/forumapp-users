@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 
+import { env } from "./env";
+
 export async function connectMongodb() {
   return mongoose
-    .connect(process.env.MONGO_URI as string)
+    .connect(env.MONGO_URI)
     .then(() => {
       console.log("MongoDB connection success!");
     })

@@ -2,7 +2,8 @@ import bcrypt from "bcrypt";
 
 import UserRepositories from "../repositories/user.repository";
 import { IUser } from "../types";
-import { createError } from "../utils/error";
+import { createError, generateErrorMessage } from "../utils/error";
+import { validateInputRegister } from "../utils";
 
 const UserServices = {
   getAll: async () => {
@@ -26,10 +27,11 @@ const UserServices = {
       const { name, email, password } = user;
 
       // input validation
-      if (!name || !email || password?.length < 8) {
+      const validationResult = validateInputRegister(user);
+      if (!validationResult.success) {
         throw createError(
           400,
-          "name or email can not be empty, and password must contains 8 or more characters"
+          generateErrorMessage(validationResult.error.issues)
         );
       }
 
