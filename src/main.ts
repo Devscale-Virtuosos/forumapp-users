@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 
 import { checkOriginMiddleware, errorHandlerMiddleware } from "./middlewares";
+import { authRouter } from "./routes/auth.route";
 import { userRouter } from "./routes/user.route";
 import { connectMongodb, env } from "./utils";
 
@@ -18,7 +19,8 @@ app.use(checkOriginMiddleware);
 /**
  * Routes
  */
-app.use("/", userRouter);
+app.use("/auth", authRouter);
+app.use("/users", userRouter);
 
 // error handler middleware, place it after all routes
 app.use(errorHandlerMiddleware);
